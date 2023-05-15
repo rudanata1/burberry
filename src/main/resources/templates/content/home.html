@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+<th:block layout:fragment="head">
+    <meta charset="utf-8">
+    <title>Burberry</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link th:href="@{/css/common.css}" rel="stylesheet"/>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <script>
+        const CHANNEL_ID = "_NaEJj";
+        Kakao.init('e63c3eccb0e1a082daf7cbb1d623e1ee');
+        console.log(Kakao.isInitialized());
+    </script>
+</th:block>
+<body>
+<th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
+
+<div layout:fragment="content" class="wrap">
+    <main>
+        <div class="c_visual_wrap mg40">
+            <div class="c_visual">
+                <a href="javascript:location.href='https://kr.burberry.com/sling-bag-p80705631/';" target="_blank"><img src="/images/bag.jpg" alt="BURBBERY BAG"></a>
+            </div>
+
+            <div class="c_btn_wrap">
+                <a href="javascript:location.href='https://kr.burberry.com/sling-bag-p80705631/';" target="_blank" class="c_btn" title="자세히 보기">자세히 보기</a>
+            </div>
+        </div>
+
+        <div class="c_txt_wrap">
+            <p class="c_txt">
+                아래와 같이 가정의 달을 맞아 소중한 고객님을 초대합니다.<br>
+                BURBERRY 채널을 추가 및 매장에 방문하셔서<br>
+                BURBERRY에 감춰진 디자인을 자세히 살펴보고<br>
+                특별한 혜택도 만나보세요.<br><br>
+
+                기간: 2023년 5월 1일(월) – 5월 31일(수)<br>
+                장소: 전국 BURBERRY 매장(면세점 제외)<br>
+                혜택*: BURBERRY에서 준비한 소정의 기념품<br>
+            </p>
+        </div>
+
+        <div class="c_btn_wrap">
+            <a href="javascript:addChanel();" style="background:#ffe500; color:#000000;" class="c_btn" title="1.채널 추가하기">1.채널 추가하기</a>
+        </div>
+
+        <div class="c_btn_wrap">
+            <a href="javascript:join_burberry_event();" class="c_btn" title="2.이벤트 참여하기">2.이벤트 참여하기</a>
+        </div>
+
+        <div class="c_txt_wrap">
+            <p class="c_txt_s">
+                *채널을 추가하지 않으시면 이벤트에 참여 하실 수 없습니다.<br>
+                *조기 소진 및 대체 증정될 수 있습니다.
+            </p>
+        </div>
+    </main>
+
+    <!-- .popup -->
+    <div class="layerPop" id="dispLayerPop">
+        <div class="l_content" >
+            <p class="logo"><img src="https://image.e-news.chanel.com/lib/fe3611717064057c741374/m/1/81f152cd-3f96-461a-a147-b987f5c2426a.png" alt="CHANEL"></p>
+            <p class="txt" id="dispLayerPop_txt"></p>
+            <div class="btnArea">
+                <a href="javascript:alertClose();" class="confirm full">확인</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>
+
+<script type="text/javascript">
+    function alertClose(){
+        $('#dispLayerPop').hide();
+    }
+
+    function alertOpen(msg){
+        $('#dispLayerPop_txt').text(msg);
+        $('#dispLayerPop').show();
+    }
+
+    function addChanel() {
+        Kakao.Auth.login({
+            success: function (authObj) {
+                console.log("login :" + JSON.stringify(authObj));
+                Kakao.Channel.addChannel({
+                    channelPublicId: CHANNEL_ID
+                });
+            },
+            fail: function (err) {
+                alert(JSON.stringify(err))
+            },
+        })
+    }
+
+    function join_burberry_event() {
+        Kakao.API.request({
+            url: '/v1/api/talk/channels',
+        })
+        .then(function(response) {
+            console.log(response);
+            if(response && response.channels && response.channels.length > 0){
+                if(CHANNEL_ID == response.channels[0].channel_public_id){
+                    console.log(response.channels[0].relation);
+                    if(response.channels[0].relation == 'ADDED') {
+                        alert('채널을 추가하여 주셔서 감사합니다.');
+                    } else {
+                        alert('채널을 추가하시고 다시 시도하여 주십시오.');
+                    }
+                }
+            }
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+    }
+</script>
+</body>
+</html>
