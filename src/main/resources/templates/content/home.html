@@ -112,9 +112,9 @@
                 if(CHANNEL_ID == response.channels[0].channel_public_id){
                     console.log(response.channels[0].relation);
                     if(response.channels[0].relation == 'ADDED') {
-                        alert('채널을 추가하여 주셔서 감사합니다.');
+                        alertOpen('채널을 추가하여 주셔서 감사합니다.');
                     } else {
-                        alert('채널을 추가하시고 다시 시도하여 주십시오.');
+                        alertOpen('채널을 추가하시고 다시 시도하여 주십시오.');
                     }
                 }
             }
